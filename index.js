@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    new Glide('.glide', {
+    const glide = new Glide('.glide', {
         type: 'carousel',
         perView: 3,
         gap: 10,
@@ -20,13 +20,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modal');
     const modalImg = document.getElementById('modal-img');
     const closeBtn = document.querySelector('.close');
-    
-    slides.forEach(slide => {
+    const modalArrows = document.querySelectorAll('.modal-arrow');
+    let currentIndex = 0;
+
+    slides.forEach((slide, index) => {
         slide.addEventListener('click', () => {
             const img = slide.querySelector('img');
             if (img) {
                 modal.style.display = 'block';
                 modalImg.src = img.src;
+                currentIndex = index;
             }
         });
     });
@@ -45,5 +48,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.key === 'Escape' && modal.style.display === 'block') {
             modal.style.display = 'none';
         }
+    });
+
+    modalArrows.forEach(arrow => {
+        arrow.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (arrow.dataset.glideDir === '<') {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            } else {
+                currentIndex = (currentIndex + 1) % slides.length;
+            }
+            const img = slides[currentIndex].querySelector('img');
+            modalImg.src = img.src;
+        });
     });
 });
